@@ -1,0 +1,29 @@
+﻿<Window x:Class="demo.View.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Window1" Height="379.2" Width="557.6">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="7*"/>
+            <RowDefinition Height="20*"/>
+        </Grid.RowDefinitions>
+        <Button Content="连接" HorizontalAlignment="Left" Margin="218,38,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" Height="32"/>
+        <Button Content="断开" HorizontalAlignment="Left" Margin="306,38,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1" Height="32"/>
+        <Button Content="交易" HorizontalAlignment="Left" Margin="386,38,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2" Height="32"/>
+        <TextBox Name="showBox" Margin="0,4.8,0.2,0.2" Grid.Row="1" TextWrapping="Wrap"/>
+        <Button Content="清空" HorizontalAlignment="Left" Margin="466,38,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_3" Height="32"/>
+        <ComboBox Name="cBox" HorizontalAlignment="Left" Margin="150,10,0,0" VerticalAlignment="Top" Width="58" SelectedIndex="1" Height="29" FontSize="16">
+            <ComboBoxItem Content="网口"/>
+            <ComboBoxItem Content="串口"/>
+        </ComboBox>
+        <TextBox Name="port" HorizontalAlignment="Left" Height="20" Margin="46,8,0,0" TextWrapping="Wrap" Text="21003" VerticalAlignment="Top" Width="66"/>
+        <TextBox Name="ipAddress" HorizontalAlignment="Left" Height="24" Margin="46,38,0,0" TextWrapping="Wrap" Text="192.168.9.159" VerticalAlignment="Top" Width="89"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,8,0,0" TextWrapping="Wrap" Text="IP端口" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,38,0,0" TextWrapping="Wrap" Text="IP地址" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,67,0,0" TextWrapping="Wrap" Text="串口" VerticalAlignment="Top"/>
+        <TextBox Name="serialPortName" HorizontalAlignment="Left" Height="23" Margin="52,68,0,0" TextWrapping="Wrap" Text="COM1" VerticalAlignment="Top" Width="83"/>
+        <TextBox Name="Jiaoyi_count" HorizontalAlignment="Left" Height="23" Margin="386,10,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="57"/>
+        <TextBlock HorizontalAlignment="Left" Margin="461,10,0,0" TextWrapping="Wrap" Text="次" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>
