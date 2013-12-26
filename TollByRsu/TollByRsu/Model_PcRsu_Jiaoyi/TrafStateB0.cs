@@ -53,8 +53,14 @@ namespace TollByRsu.Model_PcRsu_Jiaoyi
                 //_ktl.JiaoyiData.Clear();
                 _ktl.JiaoyiData.Add(recvBuffer);
 
+                if (recvBuffer[1] == 0xB2 && recvBuffer[6] == 0x80)
+                {
+                    //心跳帧
+                    return;
+                }
+
                 if (recvBuffer[1] == 0xB0 
-                    //&& recvBuffer[2] == 0x0
+                    && recvBuffer[2] == 0x0
                     )
                 {
                     //发送C1 指示继续交易
@@ -70,8 +76,11 @@ namespace TollByRsu.Model_PcRsu_Jiaoyi
                 }
                 else
                 {
+                    _ktl.Jiaoyi = false;    //交易结束
+                    _ktl.Jiaoyi_jieguo = 3; //交易结果：初始化RSU失败
+                    _ktl.Jiaoyi_jieguo_message = "STATE-B0";  //交易结果的描述
+
                     _ktl.TS = _ktl.StateB0;
-                    _ktl.Jiaoyi_jieguo_message = "初始化交易参数（接收到非B0帧）:" + ViaHere.ByteArraryToHexString(recvBuffer);
                     return;
                 }
             }

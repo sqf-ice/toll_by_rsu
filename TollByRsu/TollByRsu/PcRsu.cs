@@ -34,6 +34,69 @@ namespace TollByRsu
 
         #endregion
 
+        #region fields
+
+        /// <summary>
+        /// 每次交易的扣款额
+        /// </summary>
+        public int ConsumeMoney
+        {
+            get 
+            {
+                int c = 0;
+                for(int i = 0; i < ktLane.ConsumeMoney.Length; i++)
+                {
+                    c += ktLane.ConsumeMoney[i];
+                    c <<= 8;
+                }
+                return c;
+            }
+
+            set 
+            {
+                int cm = value;
+                int len = ktLane.ConsumeMoney.Length;
+                for (int i = 0; i < len; i++)
+                {
+                    ktLane.ConsumeMoney[len - 1 - i] = (byte)((cm >> (i * 8)) & 0xff);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 车道（19文件）内容
+        /// </summary>
+        public byte[] StationInfo
+        {
+            get
+            {
+                byte[] t = new byte[ktLane.Station.Length];
+                Array.Copy(ktLane.Station, t, t.Length);
+
+                return t;
+            }
+            set
+            {
+                byte[] t = value;
+                if (t.Length != ktLane.Station.Length) return;
+                Array.Copy(t, ktLane.Station, t.Length);
+            }
+        }
+
+        public byte c0_LaneMode 
+        { get { return ktLane.c0_LaneMode; } set { ktLane.c0_LaneMode = value; } }
+        public byte c0_WaitTime
+        { get { return ktLane.c0_WaitTime; } set { ktLane.c0_WaitTime = value; } }
+        public byte c0_TxPower
+        { get { return ktLane.c0_TxPower; } set { ktLane.c0_TxPower = value; } }
+        public byte c0_PLLChannelID
+        { get { return ktLane.c0_PLLChannelID; } set { ktLane.c0_PLLChannelID = value; } }
+        public byte c0_TransClass
+        { get { return ktLane.c0_TransClass; } set { ktLane.c0_TransClass = value; } }
+
+
+        #endregion
+
         /// <summary>
         /// 连接串口RSU
         /// </summary>

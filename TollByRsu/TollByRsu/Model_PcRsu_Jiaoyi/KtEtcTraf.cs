@@ -154,7 +154,7 @@ namespace TollByRsu.Model_PcRsu_Jiaoyi
         public bool Jiaoyi = true;    //false交易结束
 
         /// <summary>
-        /// -1 未开始交易 0开始交易（收到B2） 2成功  1失败
+        /// -1 未开始交易 0开始交易（收到B2） 2成功  1交易失败 3初始化RSU失败
         /// </summary>
         public int Jiaoyi_jieguo = -1;
 
