@@ -1,0 +1,43 @@
+本文档描述 PCRSU 交易动态的使用说明。
+
+动态库说明：
+	文件名称：TollByRsu.dll
+	编译环境：.net frame work 4.5
+	使用语言：C#
+
+	编写代码时，没有使用过于复杂的.net提供的功能，基本是用最简单的C#语法完成的功能开发。
+
+动态库的类：TollByRsu.PcRsu
+	PcRsu类是车道交易类，具备交易功能。使用该类即可完成RSU交易。
+	
+	
+PcRsu类的函数使用示例(C#)：
+	using TollByRsu;
+	//生成一个车道交易类对象
+	PcRsu pr = new PcRsu();
+	
+	//配置车道交易参数[交易额]
+	pr.ConsumeMoney = 1; //每次交易扣款1分
+		
+	//通过串口连接RSU
+	pr.ConnectRsu("COM1");    //(或者通过网口连接RSU  pr.ConnectRsu("192.168.1.22",1234);)	
+
+	//进行一次交易。 
+	pr.Jiaoyi();
+	
+	//进行一次交易后，交易结果及描述分别保存在jiaoyi_rt_id 和 jiaoyi_rt_message中
+	//pr.jiaoyi_rt_id, =2表示交易成功。其他值的含义参见类说明文档
+	//pr.jiaoyi_rt_message;
+	
+	//断开RSU连接
+	pr.DisConnectRsu();
+
+PcRsu类依据PC-RSU车道编程接口实现交易。进行车道交易的伪代码：
+		配置车道交易参数；
+		连接RSU；
+		{while(继续交易){交易；}}
+		断开RSU。
+		
+	车道交易参数：c0_LaneMode,c0_WaitTime,c0_TxPower,c0_PLLChannelID,c0_TransClass;StationInfo;ConsumeMoney;
+
+	

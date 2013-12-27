@@ -1,0 +1,280 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TollByRsu</name>
+    </assembly>
+    <members>
+        <member name="T:TollByRsu.PcRsu">
+            <summary>
+            用于控制RSU进行车道交易
+            
+            author:fanshiming 2013 copyright(c)
+            </summary>
+        </member>
+        <member name="F:TollByRsu.PcRsu.ktLane">
+            <summary>
+            交易控制类
+            </summary>
+        </member>
+        <member name="M:TollByRsu.PcRsu.ConnectRsu(System.String)">
+            <summary>
+            连接串口RSU
+            </summary>
+            <param name="serialPortName">串口名称</param>
+        </member>
+        <member name="M:TollByRsu.PcRsu.ConnectRsu(System.String,System.Int32)">
+            <summary>
+            连接网口RSU
+            </summary>
+            <param name="ipAddress">点分十进制IP字符串</param>
+            <param name="port">端口号</param>
+        </member>
+        <member name="M:TollByRsu.PcRsu.DisConnectRsu">
+            <summary>
+            断开RSU连接
+            </summary>
+        </member>
+        <member name="M:TollByRsu.PcRsu.Jiaoyi">
+            <summary>
+            进行一次交易
+            </summary>
+        </member>
+        <member name="P:TollByRsu.PcRsu.pcrsu_data">
+            <summary>
+            每次交易时的PC-RSU数据
+            </summary>
+        </member>
+        <member name="P:TollByRsu.PcRsu.jiaoyi_rt_id">
+            <summary>
+            交易结果。含义：-1 未开始交易 0开始交易（收到B2） 2成功  1交易失败 3初始化RSU失败
+            </summary>
+        </member>
+        <member name="P:TollByRsu.PcRsu.jiaoyi_rt_message">
+            <summary>
+            交易结果描述。
+            </summary>
+        </member>
+        <member name="P:TollByRsu.PcRsu.ConsumeMoney">
+            <summary>
+            每次交易的扣款额
+            </summary>
+        </member>
+        <member name="P:TollByRsu.PcRsu.StationInfo">
+            <summary>
+            车道（19文件）内容
+            </summary>
+        </member>
+        <member name="P:TollByRsu.PcRsu.c0_LaneMode">
+            <summary>
+            C0帧规范：车道交易模式，3 ETC入口， 4 ETC出口， 6 ETC开放式
+            </summary>
+        </member>
+        <member name="P:TollByRsu.PcRsu.c0_WaitTime">
+            <summary>
+            C0帧规范：最小重读时间，一般设置为1,2两种值，单位为秒。
+            </summary>
+        </member>
+        <member name="P:TollByRsu.PcRsu.c0_TxPower">
+            <summary>
+            RSU的发射功率，1-31个级别，一般8级保证可用，车道上设置为21.
+            </summary>
+        </member>
+        <member name="P:TollByRsu.PcRsu.c0_PLLChannelID">
+            <summary>
+            RSU与OBU通信信道，只能设置为 0或者1
+            </summary>
+        </member>
+        <member name="P:TollByRsu.PcRsu.c0_TransClass">
+            <summary>
+            交易类型。 0 全都是传统消费， 1 全都是复合消费， 2 记账卡传统消费储值卡复合消费
+            </summary>
+        </member>
+        <member name="P:TollByRsu.PcRsu.DisplayConnect">
+            <summary>
+            当前与RSU的连接方式
+            </summary>
+        </member>
+        <member name="P:TollByRsu.PcRsu.IsRsuConnected">
+            <summary>
+            当前的RSU连接状态
+            </summary>
+        </member>
+        <member name="T:TollByRsu.Model.CommIO_PcRsu">
+            <summary>
+            PC-RSU的通信接口
+            </summary>
+        </member>
+        <member name="M:TollByRsu.Model.CommIO_PcRsu.Conn">
+            <summary>
+            连接数据接口
+            </summary>
+        </member>
+        <member name="M:TollByRsu.Model.CommIO_PcRsu.DisConn">
+            <summary>
+            断开与数据接口的连接
+            </summary>
+        </member>
+        <member name="M:TollByRsu.Model.CommIO_PcRsu.Receive(System.Byte[]@)">
+            <summary>
+            从RSU接收数据,整数据帧返回
+            </summary>
+            <param name="buffer"> Byte 类型的数组，它是存储接收到的数据的位置。</param>
+            <returns>接收到的字节数</returns>
+        </member>
+        <member name="M:TollByRsu.Model.CommIO_PcRsu.Send(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            PC向RSU发送数据
+            </summary>
+            <param name="sendBuff">发送缓冲区</param>
+            <param name="offSet">偏移量</param>
+            <param name="count">字节数量</param>       
+        </member>
+        <member name="M:TollByRsu.Model.CommIO_PcRsu.PcRsuFrameUp(System.Byte[],System.Int32,System.Int32,System.Byte[]@)">
+            <summary>
+            向上解封装PC-RSU数据帧,返回的是RSCTL||DATA||BCC
+            </summary>
+            <param name="src">PC-RSU数据帧,STX||RSCTL||DATA||BCC||ETX</param>
+            <param name="offSet">起始位置</param>
+            <param name="size">长度</param>
+            <param name="dest">返回的是RSCTL||DATA||BCC</param>
+        </member>
+        <member name="M:TollByRsu.Model.CommIO_PcRsu.PcRsuFrameDown(System.Byte[],System.Int32,System.Int32,System.Byte[]@)">
+            <summary>
+            向下封装PC-RSU数据帧,返回的是FF转义后的STX||RSCTL||DATA||BCC||ETX
+            </summary>
+            <param name="src">PC-RSU数据帧,RSCTL||DATA||BCC</param>
+            <param name="offSet">起始位置</param>
+            <param name="size">长度</param>
+            <param name="dest">返回的是FF转义后的STX||RSCTL||DATA||BCC||ETX</param>
+        </member>
+        <member name="P:TollByRsu.Model.CommIO_PcRsu.IsConn">
+            <summary>
+            是否已经连接RSU
+            </summary>
+        </member>
+        <member name="P:TollByRsu.Model.CommIO_PcRsu.SendTimeOut">
+            <summary>
+            发送超时 毫秒
+            </summary>
+        </member>
+        <member name="P:TollByRsu.Model.CommIO_PcRsu.ReceiveTimeOut">
+            <summary>
+            接收超时 毫秒
+            </summary>
+        </member>
+        <member name="F:TollByRsu.Model_PcRsu_Jiaoyi.KtEtcTraf.CardDivFactor">
+            <summary>
+            卡分散因子。根据卡网络编号查询. exp: key=11,value=b1b1bea9b1b1bea9
+            </summary>
+        </member>
+        <member name="F:TollByRsu.Model_PcRsu_Jiaoyi.KtEtcTraf.Jiaoyi_jieguo">
+            <summary>
+            -1 未开始交易 0开始交易（收到B2） 2成功  1交易失败 3初始化RSU失败
+            </summary>
+        </member>
+        <member name="M:TollByRsu.Model_PcRsu_Jiaoyi.KtEtcTraf.WorkerHere">
+            <summary>
+            连接RSU，交易一次，断开连接
+            </summary>
+        </member>
+        <member name="F:TollByRsu.Model_PcRsu_Jiaoyi.KtEtcTraf._ts">
+            <summary>
+            交易信息 包含标签 车辆 卡 交易详细信息
+            </summary>
+        </member>
+        <member name="M:TollByRsu.Model_PcRsu_Jiaoyi.KtEtcTraf.BxFrameCheck(System.Byte[])">
+            <summary>
+            返回FALSE，表示该帧无效
+            </summary>
+            <param name="bx"></param>
+            <returns></returns>
+        </member>
+        <member name="T:TollByRsu.Model_PcRsu_Jiaoyi.TrafState">
+            <summary>
+            交易状态
+            fanshiming 201208
+            </summary>
+        </member>
+        <member name="M:TollByRsu.Model_PcRsu_Jiaoyi.TrafState.BxFrameCheck(System.Byte[])">
+            <summary>
+            返回FALSE，表示该帧无效
+            </summary>
+            <param name="bx"></param>
+            <returns></returns>
+        </member>
+        <member name="T:TollByRsu.ViaHere">
+            <summary>
+            memo:
+                tools
+            
+            author: name(ViaHere), fan reserved ,from 2006
+            </summary>
+        </member>
+        <member name="M:TollByRsu.ViaHere.SingleDES(TollByRsu.ViaHere.DESType,System.Byte[],System.Int32,System.Byte[],System.Int32@,System.Byte[]@)">
+            <summary>
+            DES计算
+            </summary>
+            <param name="dt">计算模式：加密或解密</param>
+            <param name="singleDESKey">计算密钥，8字节</param>
+            <param name="sourDataLen">源数据长度</param>
+            <param name="sourData">源数据</param>
+            <param name="destDataLen">结果数据长度</param>
+            <param name="destData">结果数据</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:TollByRsu.ViaHere.TripleDES(TollByRsu.ViaHere.DESType,System.Byte[],System.Int32,System.Byte[],System.Int32@,System.Byte[]@)">
+            <summary>
+            3DES计算
+            </summary>
+            <param name="dt">计算模式：加密或解密</param>
+            <param name="tripleDESKey">计算密钥，16字节</param>
+            <param name="sourDataLen">源数据长度</param>
+            <param name="sourData">源数据</param>
+            <param name="destDataLen">结果数据长度</param>
+            <param name="destData">结果数据</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:TollByRsu.ViaHere.TheTAC(System.Byte[],System.Byte[],System.Int32,System.Byte[],System.Byte[]@)">
+            <summary>
+            计算TAC
+            </summary>
+            <param name="key">密钥</param>
+            <param name="tacDataLen">TAC数据长度</param>
+            <param name="tacData">TAC数据</param>
+            <param name="tac">TAC</param>
+            <returns>是否成功</returns>
+        </member>
+        <member name="M:TollByRsu.ViaHere.KeyDiv(System.Byte[],System.Byte[],System.Byte[]@)">
+            <summary>
+            秘钥分散 16bytes
+            </summary>
+            <param name="key_src">主密钥</param>
+            <param name="divFactor">分散因子</param>
+            <param name="key">分散后秘钥</param>
+        </member>
+        <member name="M:TollByRsu.ViaHere.HexStringToByteArray_MinLength(System.String,System.Byte[])">
+            <summary>
+            适用于从XML等文件中读取并处理为byte数组。根据min(dst,s)长度决定读取最小长度的数据。
+            </summary>
+            <param name="s"></param>
+            <param name="dst"></param>
+        </member>
+        <member name="T:TollByRsu.ViaHere.DESType">
+            <summary>
+            DES加密模式
+            
+            author:liujing 2012 qiuchuanpiaoyizhang
+            </summary>
+        </member>
+        <member name="F:TollByRsu.ViaHere.DESType.Encrypt">
+            <summary>
+            加密
+            </summary>
+        </member>
+        <member name="F:TollByRsu.ViaHere.DESType.Decrypt">
+            <summary>
+            解密
+            </summary>
+        </member>
+    </members>
+</doc>
