@@ -50,7 +50,7 @@ namespace TollByRsu.Model
                     _sp.DataBits = 8;
                     _sp.ReadTimeout = 1000;
                     _sp.WriteTimeout = 120;
-
+                                        
                 }
                 return _sp;
             }

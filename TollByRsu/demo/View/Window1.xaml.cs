@@ -55,7 +55,7 @@ namespace demo.View
                     default:
                         break;
                 }
-                showBox.AppendText("连接\t" + pr.ktLane.PcRsu_CommIO.IsConn.ToString() + "\r\n");
+                showBox.AppendText("连接\t" + pr.IsRsuConnected.ToString() + "\r\n");
             }
             catch (Exception ex)
             {
@@ -97,10 +97,9 @@ namespace demo.View
                 showBox.Clear();
                 pr.Jiaoyi();
 
-                showBox.AppendText( "交易结果\t" + pr.ktLane.Jiaoyi_jieguo.ToString() + "\t" +
-                    pr.ktLane.Jiaoyi_jieguo_message + "\r\n");
+                showBox.AppendText( "交易结果\t" + pr.jiaoyi_rt_id.ToString() + "\t" +
+                    pr.jiaoyi_rt_message + "\r\n");
                 showBox.AppendText("通信方式\t" + pr.DisplayConnect + "\r\n"); 
-                showBox.AppendText("当前交易状态\t" + pr.ktLane.TS.DisplayName + "\r\n");
 
                 foreach (byte[] bs in pr.pcrsu_data)
                 {
@@ -117,7 +116,7 @@ namespace demo.View
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            if (pr.ktLane.PcRsu_CommIO != null && pr.ktLane.PcRsu_CommIO.IsConn)
+            if (pr.IsRsuConnected)
             {
                 pr.DisConnectRsu();
             }
