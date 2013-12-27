@@ -65,7 +65,9 @@ namespace TollByRsu.Model_PcRsu_Jiaoyi
                     if (bx.Length != 98 && bx.Length != 101) { rt = false; }
                     break;
                 case 0xB5:
-                    if (bx.Length != 18 && bx.Length != 40) { rt = false; }
+                    if (bx.Length != 18 && bx.Length != 40
+                        && bx.Length < 8 //仅检查到status字段
+                        ) { rt = false; }
                     break;
                 default:
                     rt = false;
@@ -73,7 +75,8 @@ namespace TollByRsu.Model_PcRsu_Jiaoyi
             }
 
             //BCC CHECK
-
+            if (bx[bx.Length - 1] != ViaHere.BccCalc(bx, 0, bx.Length - 1))
+            { rt = false; }
 
             return rt;
         }

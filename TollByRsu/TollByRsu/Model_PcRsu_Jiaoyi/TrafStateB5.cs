@@ -27,28 +27,19 @@ namespace TollByRsu.Model_PcRsu_Jiaoyi
             byte[] recvBuffer = null;
             byte[] cx;
 
-            try
-            {
-
-                _ktl.PcRsu_CommIO.Receive(out recvBuffer);
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-            }
+            _ktl.PcRsu_CommIO.Receive(out recvBuffer);
 
             if (!BxFrameCheck(recvBuffer))
             {
-                //接收到无效帧
+                //接收到无效帧,进入B2状态
+                _ktl.Jiaoyi_jieguo_message = "接收到无效帧";
                 return;
             }
+
             if (recvBuffer[1] == 0xB2 && recvBuffer[6] == 0x80)
             {
                 //心跳帧
+                _ktl.Jiaoyi_jieguo_message = "接收到心跳帧";
                 return;
             }
 

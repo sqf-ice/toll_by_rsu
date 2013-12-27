@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,12 +18,24 @@ namespace demo.View
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class Window1 : Window
+    public partial class Window1 : Window, INotifyPropertyChanged
     {
         public Window1()
         {
             InitializeComponent();
         }
+
+        #region INotifyPropertyChanged 成员
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged(String propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+        #endregion
 
         TollByRsu.PcRsu pr = new TollByRsu.PcRsu();
 
@@ -42,7 +55,7 @@ namespace demo.View
                     default:
                         break;
                 }
-                showBox.AppendText("连接\r\n");
+                showBox.AppendText("连接\t" + pr.ktLane.PcRsu_CommIO.IsConn.ToString() + "\r\n");
             }
             catch (Exception ex)
             {
@@ -54,46 +67,60 @@ namespace demo.View
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             pr.DisConnectRsu();
-            showBox.AppendText("断开\r\n");
+            showBox.AppendText("断开\t" + pr.IsRsuConnected.ToString() + "\r\n");
         }
 
         delegate void appendText(string msg);
+        delegate void clearBox();
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             try
             {
-                appendText adt = new appendText(showBox.AppendText);
-                int n = int.Parse(Jiaoyi_count.Text);
-                while (n-- > 0)
-                {
-                    showBox.Clear();
-
-                    pr.Jiaoyi();
-
-                    adt.BeginInvoke("交易\t" + pr.ktLane.Jiaoyi_jieguo.ToString() + "\t" +
-                        pr.ktLane.Jiaoyi_jieguo_message + "\r\n", null, null);
-
-                    foreach (byte[] bs in pr.pcrsu_data)
-                    {
-                        adt.BeginInvoke("\t" + TollByRsu.ViaHere.ByteArraryToHexString(bs) + "\r\n", null, null);
-                    }
-                }
-
+                JiaoyiDemo();
             }
             catch (Exception ex)
             {
-                showBox.AppendText("ex:" + ex.Message + "\r\n");
-                showBox.AppendText(pr.ktLane.TS.DisplayName + "\r\n");
+                MessageBox.Show("ex:" + ex.Message + "\r\n");
             }
             finally
             {
+                showBox.AppendText("end\r\n");
             }
+        }
+
+        private void JiaoyiDemo()
+        {
+            int n = int.Parse(Jiaoyi_count.Text);
+            while (n-- > 0)
+            {
+                showBox.Clear();
+                pr.Jiaoyi();
+
+                showBox.AppendText( "交易结果\t" + pr.ktLane.Jiaoyi_jieguo.ToString() + "\t" +
+                    pr.ktLane.Jiaoyi_jieguo_message + "\r\n");
+                showBox.AppendText("通信方式\t" + pr.DisplayConnect + "\r\n"); 
+                showBox.AppendText("当前交易状态\t" + pr.ktLane.TS.DisplayName + "\r\n");
+
+                foreach (byte[] bs in pr.pcrsu_data)
+                {
+                    showBox.AppendText("\t" + TollByRsu.ViaHere.ByteArraryToHexString(bs) + "\r\n");
+                }
+            }
+ 
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
             showBox.Clear();
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (pr.ktLane.PcRsu_CommIO != null && pr.ktLane.PcRsu_CommIO.IsConn)
+            {
+                pr.DisConnectRsu();
+            }
         }
 
     }

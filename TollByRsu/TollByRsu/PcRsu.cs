@@ -95,6 +95,12 @@ namespace TollByRsu
         { get { return ktLane.c0_TransClass; } set { ktLane.c0_TransClass = value; } }
 
 
+        public string DisplayConnect { get { return ktLane.PcRsu_CommIO.DisplayName; } }
+
+        public bool IsRsuConnected
+        { get {
+            return ktLane.PcRsu_CommIO.IsConn; } }
+
         #endregion
 
         /// <summary>
@@ -103,10 +109,10 @@ namespace TollByRsu
         /// <param name="serialPortName"></param>
         public void ConnectRsu(string serialPortName)
         {
-            if(ktLane.PcRsu_CommIO != null && ktLane.PcRsu_CommIO.IsConn)
-            {
-                throw new Exception("the rsu is already connected");
-            }
+            //if(ktLane.PcRsu_CommIO != null && ktLane.PcRsu_CommIO.IsConn)
+            //{
+            //    throw new Exception("the rsu is already connected");
+            //}
 
             ktLane.serialPortName = serialPortName;
             ktLane.SetRsuCommIO(KtEtcTraf.PcRsu_CommIo_Type.Serial);
@@ -121,14 +127,14 @@ namespace TollByRsu
         /// <param name="port">TCP port</param>
         public void ConnectRsu(string ipAddress, int port)
         {
-            if (ktLane.PcRsu_CommIO != null && ktLane.PcRsu_CommIO.IsConn)
-            {
-                throw new Exception("the rsu is already connected");
-            }
+            //if (ktLane.PcRsu_CommIO != null && ktLane.PcRsu_CommIO.IsConn)
+            //{
+            //    throw new Exception("the rsu is already connected");
+            //}
 
             ktLane.TheIpAddress = System.Net.IPAddress.Parse(ipAddress);
             ktLane.TheTcpPort = port;
-            ktLane.SetRsuCommIO(KtEtcTraf.PcRsu_CommIo_Type.Serial);
+            ktLane.SetRsuCommIO(KtEtcTraf.PcRsu_CommIo_Type.Tcp);
 
             ktLane.PcRsu_CommIO.Conn();
 
@@ -136,28 +142,17 @@ namespace TollByRsu
 
         public void DisConnectRsu()
         {
-            if (ktLane.PcRsu_CommIO != null && ktLane.PcRsu_CommIO.IsConn)
-            {
                 ktLane.PcRsu_CommIO.DisConn();
-            }
         }
 
         public void Jiaoyi()
         {
-            try
+            ktLane.Jiaoyi = true;
+            ktLane.PcRsu_CommIO.ClearReceiveBuffer();
+            while (ktLane.Jiaoyi)
             {
-                ktLane.Jiaoyi = true;
-                ktLane.PcRsu_CommIO.ClearReceiveBuffer();
-                while (ktLane.Jiaoyi)
-                {
-                    ktLane.TS.StateWorker();
-                }
+                ktLane.TS.StateWorker();
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally { }
         }
     }
 }

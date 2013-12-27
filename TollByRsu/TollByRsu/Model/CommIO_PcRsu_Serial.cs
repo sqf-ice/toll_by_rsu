@@ -10,6 +10,25 @@ namespace TollByRsu.Model
     public class CommIO_PcRsu_Serial : CommIO_PcRsu
     {
         #region constructor
+
+        public CommIO_PcRsu_Serial()
+        {            
+            {
+                _sp = new SerialPort();
+
+                _sp.PortName = "COM1";
+
+                _sp.BaudRate = 115200;
+                _sp.Parity = Parity.None;
+                _sp.StopBits = StopBits.One;
+                _sp.DataBits = 8;
+                _sp.ReadTimeout = 500;
+                _sp.WriteTimeout = 500;
+
+            }
+
+        }
+
         #endregion
 
         #region field
@@ -29,8 +48,8 @@ namespace TollByRsu.Model
                     _sp.Parity = Parity.None;
                     _sp.StopBits = StopBits.One;
                     _sp.DataBits = 8;
-                    _sp.ReadTimeout = 500;
-                    _sp.WriteTimeout = 500;
+                    _sp.ReadTimeout = 1000;
+                    _sp.WriteTimeout = 120;
 
                 }
                 return _sp;
@@ -39,6 +58,14 @@ namespace TollByRsu.Model
 
         #endregion
 
+        public override string DisplayName
+        {
+            get
+            {
+                return "SerialPort";
+            }
+        }
+
         public override void Conn()
         {
             _sp.Open();
@@ -46,8 +73,11 @@ namespace TollByRsu.Model
 
         public override void DisConn()
         {
-            _sp.Close();
-            _sp.Dispose();
+            if (_sp.IsOpen)
+            {
+                _sp.Close();
+                _sp.Dispose();
+            }
         }
 
         public override bool IsConn

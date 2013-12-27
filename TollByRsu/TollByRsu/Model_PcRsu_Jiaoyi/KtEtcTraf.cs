@@ -28,7 +28,11 @@ namespace TollByRsu.Model_PcRsu_Jiaoyi
             CardDivFactor.Add(0x22, new byte[] { 0xBC, 0XAA, 0XC1, 0XD6, 0xBC, 0XAA, 0XC1, 0XD6 });
             CardDivFactor.Add(0x31, new byte[] { 0xC9, 0XCF, 0XBA, 0XA3, 0xC9, 0XCF, 0XBA, 0XA3 });
 
+            prs = new CommIO_PcRsu_Serial();
+            pr_t = new CommIO_PcRsu_Tcp();
+            prs1 = new CommIO_PcRsu_Serial();
 
+            _pr = prs;
         }
 
         ~KtEtcTraf() { }
@@ -37,26 +41,27 @@ namespace TollByRsu.Model_PcRsu_Jiaoyi
 
         #region rsu commio fields
 
+        readonly CommIO_PcRsu_Serial prs;
+        readonly CommIO_PcRsu_Tcp pr_t;
+        readonly CommIO_PcRsu_Serial prs1;
+
         public void SetRsuCommIO(PcRsu_CommIo_Type pr)
         {
             switch (pr)
             { 
-                case PcRsu_CommIo_Type.Serial:
-                    CommIO_PcRsu_Serial prs = new CommIO_PcRsu_Serial();
+                case PcRsu_CommIo_Type.Serial:                    
                     prs.Sp.PortName = _serialPortName;
                     _pr = prs;
                     _pcrsu_commio_type = PcRsu_CommIo_Type.Serial;
                     break;
-                case PcRsu_CommIo_Type.Tcp:
-                    CommIO_PcRsu_Tcp pr_t = new CommIO_PcRsu_Tcp();
+                case PcRsu_CommIo_Type.Tcp:                    
                     pr_t.ThePort = _TheTcpPort;
                     pr_t.TheIpAddress = _TheIpAddress;
                     _pr = pr_t;
                     _pcrsu_commio_type = PcRsu_CommIo_Type.Tcp;
                     break;
                 case PcRsu_CommIo_Type.UN:
-                default:
-                    CommIO_PcRsu_Serial prs1 = new CommIO_PcRsu_Serial();
+                default:                    
                     prs1.Sp.PortName = "COM1";
                     _pr = prs1;
                     _pcrsu_commio_type = PcRsu_CommIo_Type.UN;
@@ -64,10 +69,11 @@ namespace TollByRsu.Model_PcRsu_Jiaoyi
             }
         }
 
-        CommIO_PcRsu _pr = null;
+        CommIO_PcRsu _pr;
         public CommIO_PcRsu PcRsu_CommIO
         {
-            get { return _pr; }
+            get {       
+                return _pr; }
         }
 
         PcRsu_CommIo_Type _pcrsu_commio_type = PcRsu_CommIo_Type.UN;

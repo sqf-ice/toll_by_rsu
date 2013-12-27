@@ -25,50 +25,40 @@ namespace TollByRsu.Model_PcRsu_Jiaoyi
             byte[] recvBuffer = null;
             byte[] c1 = new byte[15];
 
-            try
-            {
-                //放开这里的注释，可以增加交易稳定性
-                //if (!_ktl.PcRsu_CommIO.IsConn)
-                //{
-                //    _ktl.PcRsu_CommIO.Conn();
-                //}
+            _ktl.PcRsu_CommIO.ReceiveTimeOut = -1;
+            _ktl.PcRsu_CommIO.SendTimeOut = 120;
 
-                _ktl.PcRsu_CommIO.ReceiveTimeOut = -1;
-                _ktl.PcRsu_CommIO.SendTimeOut = 120;
+            _ktl.Jiaoyi_jieguo_message = "等待车辆信息(B2)";
+            _ktl.PcRsu_CommIO.Receive(out recvBuffer);
+            _ktl.Jiaoyi_jieguo_message = "接收到数据(B2)";
 
-                _ktl.PcRsu_CommIO.Receive(out recvBuffer);
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-            }
 
 
             if (!BxFrameCheck(recvBuffer))
             {
                 //接收到无效帧,进入B2状态
+                _ktl.Jiaoyi_jieguo_message = "接收到无效帧";
                 return;
             }
 
             if (recvBuffer[1] == 0xB2 && recvBuffer[6] == 0x80)
             { 
                 //心跳帧
+                _ktl.Jiaoyi_jieguo_message = "接收到心跳帧";
                 return;
             }
 
             if (recvBuffer[1] == 0xb0)
             {
                 //进入B0状态
+                _ktl.Jiaoyi_jieguo_message = "接收到RSU上电信息帧";
                 _ktl.TS = _ktl.StateB0;
                 return;
             }
 
             if (recvBuffer[1] != 0xB2)
             {
+                _ktl.Jiaoyi_jieguo_message = "接收到不期待的信息帧(B2)";
                 return;
             }
             

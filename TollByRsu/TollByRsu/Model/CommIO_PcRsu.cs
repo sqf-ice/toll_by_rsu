@@ -19,6 +19,12 @@ namespace TollByRsu.Model
             }
         }
 
+        public virtual string DisplayName
+        {
+            get { return "base(abstract)"; }
+            private set { }
+        }
+
         /// <summary>
         /// 连接数据接口
         /// </summary>

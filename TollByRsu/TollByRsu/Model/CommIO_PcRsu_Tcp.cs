@@ -14,8 +14,7 @@ namespace TollByRsu.Model
 
         public CommIO_PcRsu_Tcp()
         {
-            ipe = new IPEndPoint(TheIpAddress, ThePort);
-            _s = new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            _s = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
         }
 
@@ -27,7 +26,6 @@ namespace TollByRsu.Model
         public Socket sClient { get { return _s; } }
 
         //RSU地址  IP地址+端口号；默认为192.168.9.159：21003
-        private IPEndPoint ipe;
 
         private IPAddress _TheIpAddress = IPAddress.Parse("192.168.9.159");
         public IPAddress TheIpAddress
@@ -43,33 +41,33 @@ namespace TollByRsu.Model
             set { if (value == _ThePort) return; _ThePort = value; }
         }
 
-        public void SetIPAddress(System.Net.IPAddress ipa, int port)
-        {
-            ipe = new IPEndPoint(TheIpAddress, ThePort);
-        }
 
         #endregion
 
+        public override string DisplayName
+        {
+            get
+            {
+                return "TCP/IP";
+            }
+        }
+
         public override void Conn()
         {
-            if (_s != null & _s.Connected)
-            {
-                _s.Disconnect(false);
-                _s.Close();
-                _s.Dispose();
-            }
+            if (_s.Connected) { throw new Exception("already connected, please disconn first"); }
 
-            ipe = new IPEndPoint(TheIpAddress, ThePort);
-            _s = new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-            _s.Connect(ipe);
+            _s = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            _s.Connect(TheIpAddress, ThePort);
         }
 
         public override void DisConn()
         {
-            _s.Disconnect(false);
-            _s.Close();
-            _s.Dispose();
+            if (_s.Connected)
+            {
+                //_s.Disconnect(false);
+                //_s.Dispose();
+                _s.Close();
+            }
         }
 
         public override bool IsConn
